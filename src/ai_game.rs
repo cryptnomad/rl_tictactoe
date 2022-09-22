@@ -25,6 +25,25 @@ pub fn train(epochs: usize, print_every_n: usize){
     game.save_policies();
 }
 
+pub fn compete(num_games: usize){
+    let player1 = AiPlayer::custom(0.1, 0.0);
+    let player2 = AiPlayer::custom(0.1, 0.0);
+    let mut game = AiGame::new(player1, player2);
+    game.load_policies();
+    let mut p1_winrate = 0.0;
+    let mut p2_winrate = 0.0;
+
+    for _ in 1..num_games+1{
+        let winner = game.play(false);
+        if winner == 1{
+            p1_winrate += 1.0;
+        }else if winner == -1{
+            p2_winrate += 1.0;
+        }
+        game.reset();
+    }
+    println!("{} Games: Player 1 winrate: {}, Player 2 winrate: {}", num_games, p1_winrate/num_games as f64, p2_winrate/num_games as f64);
+}
 
 #[derive(Debug)]
 pub struct AiGame {
@@ -92,6 +111,11 @@ impl AiGame {
     pub fn save_policies(&mut self){
         self.player1.save_policy();
         self.player2.save_policy();
+    }
+
+    pub fn load_policies(&mut self){
+        self.player1.load_policy();
+        self.player2.load_policy();
     }
 
     fn alternate(&mut self) {

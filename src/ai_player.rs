@@ -28,6 +28,17 @@ impl AiPlayer{
         }
     }
 
+    pub fn custom(step_size: f64, epsilon: f64) -> Self{
+        Self{
+            estimations: HashMap::new(),
+            step_size: step_size,
+            epsilon: epsilon,
+            states: vec![],
+            greedy: vec![],
+            symbol: 0,
+        }
+    }
+
     pub fn reset(&mut self){
         self.states = vec![];
         self.greedy = vec![];
