@@ -1,3 +1,6 @@
+/*
+    Author: @cryptnomad
+*/
 use crate::state::State;
 use crate::ai_player::AiPlayer;
 
