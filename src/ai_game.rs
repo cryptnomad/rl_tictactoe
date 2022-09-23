@@ -12,7 +12,7 @@ pub fn train(epochs: usize, print_every_n: usize){
     let mut p2_winrate = 0.0;
 
     for i in 1..epochs+1{
-        let winner = game.play(false);
+        let winner = game.play(true);
         if winner == 1{
             p1_winrate += 1.0;
         }else if winner == -1{

@@ -8,10 +8,17 @@ use serde::{Serialize, Deserialize};
 
 pub const BOARD_SIZE: usize = 9;
 
+/*
+    Load all states as a static
+*/
 lazy_static! {
     pub static ref ALL_STATES: HashMap<isize, (bool, isize)> = get_all_states();
 }
 
+
+/*
+    Get all possible states of the board
+*/
 pub fn get_all_states() -> HashMap<isize, (bool, isize)>{
     let mut all_states = HashMap::new();
     let cur_symbol: isize = 1;
@@ -22,6 +29,10 @@ pub fn get_all_states() -> HashMap<isize, (bool, isize)>{
     all_states
 }
 
+/*
+    Loop through every position on the board and recursively add
+    every possible state
+*/
 fn get_all_states_impl(
     cur_state: &State, 
     cur_symbol: isize, 
@@ -40,15 +51,21 @@ fn get_all_states_impl(
     }
 }
 
+/*
+    State struct holds 1 possible configuration of the board
+*/
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)] // enable copy semantics, make it printable and comparable
 pub struct State{
-    board: [isize; BOARD_SIZE],
+    board: [isize; BOARD_SIZE], // Board has 1 for X, 0 for none, and -1 for O
     winner: isize,
     hash: isize,
     end: bool,
 }
 
 impl State {
+    /*
+        A new state is initialized with no moves and no winner
+    */
     pub fn new() -> Self{
         let mut state = Self{
             board: [0; BOARD_SIZE],
@@ -60,6 +77,9 @@ impl State {
         state
     }
 
+    /*
+        Print the board as X and O
+    */
     pub fn display(&self){
         let mut char_arr: [char; BOARD_SIZE] = [' '; BOARD_SIZE];
         for i in 0..BOARD_SIZE{
@@ -83,7 +103,48 @@ impl State {
         );
     }
     
-    pub fn compute_hash(&mut self){
+    /*
+        Public access to hash
+    */
+    pub fn get_hash(&self) -> isize{
+        self.hash
+    }
+
+    /*
+        Public access to a specific tile on the board
+    */
+    pub fn get_tile(&self, i: usize) -> isize{
+        self.board[i]
+    }
+
+     /*
+        Public access to the winner of the game
+    */
+    pub fn get_winner(&self) -> isize{
+        self.winner
+    }
+
+    /*
+        Whether the game is over or not
+    */
+    pub fn is_end(&self) -> bool{
+        self.end
+    }
+
+    /*
+        Return the next state, after a specific move is made
+    */
+    pub fn get_next_state(&self, i: usize, symbol: isize) -> Self {
+        let mut new_state = self.clone();
+        new_state.board[i] = symbol;
+        new_state.update();
+        new_state
+    }
+
+    /*
+        A simple hash function that will be unique for each 
+    */
+    fn compute_hash(&mut self){
         let mut hash: isize = 0;
         for (_, val) in self.board.iter().enumerate(){
             hash = hash * 3 + (*val) + 1;
@@ -91,29 +152,9 @@ impl State {
         self.hash = hash;
     }
 
-    pub fn get_hash(&self) -> isize{
-        self.hash
-    }
-
-    pub fn get_tile(&self, i: usize) -> isize{
-        self.board[i]
-    }
-
-    pub fn get_next_state(&self, i: usize, symbol: isize) -> Self {
-        let mut new_state = Self::from(&self.board);
-        new_state.board[i] = symbol;
-        new_state.update();
-        new_state
-    }
-
-    pub fn get_winner(&self) -> isize{
-        self.winner
-    }
-
-    pub fn is_end(&self) -> bool{
-        self.end
-    }
-
+    /*
+        Check whether the game is over, and who has won
+    */
     fn check_end(&mut self){
         let mut score: isize;
         // Check verticals and horizontals
@@ -180,16 +221,10 @@ impl State {
         
     }
 
-
-    fn from(from_board: &[isize; BOARD_SIZE]) -> Self{
-        Self{
-            board: from_board.clone(),
-            winner: 0,
-            hash: 0,
-            end: false
-        }
-    }
-
+    /*
+        Update the hash and the end members
+            - this is called when a new state is made or a move is made
+    */
     fn update(&mut self){
         self.compute_hash();
         self.check_end();

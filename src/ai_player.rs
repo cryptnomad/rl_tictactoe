@@ -8,7 +8,9 @@ use rand::prelude::*;
 use rand::seq::SliceRandom;
 use crate::state::{State, BOARD_SIZE, ALL_STATES};
 
-
+/*
+    Struct for and Ai Agent that receives reward based on state
+*/
 #[derive(Debug)]
 pub struct AiPlayer{
     estimations: HashMap<isize, f64>,
@@ -20,6 +22,10 @@ pub struct AiPlayer{
 }
 
 impl AiPlayer{
+    /*
+        A default ai player
+            - initial symbol is 0. We have to set that manually
+    */
     pub fn default() -> Self{
         Self{
             estimations: HashMap::new(),
@@ -31,6 +37,11 @@ impl AiPlayer{
         }
     }
 
+    /*
+        Custom stepsize and epsilon
+            - stepsize will be the learning rate
+            - epsilon can be thought of as the propensity to make a random move
+    */
     pub fn custom(step_size: f64, epsilon: f64) -> Self{
         Self{
             estimations: HashMap::new(),
@@ -42,17 +53,29 @@ impl AiPlayer{
         }
     }
 
+    /*
+        Reset the player after a game is complete
+    */
     pub fn reset(&mut self){
         self.states = vec![];
         self.greedy = vec![];
     }
 
-    // Might need to copy state
+    /*
+        Set the latest state
+    */
     pub fn set_state(&mut self, state: &State){
         self.states.push(state.clone());
         self.greedy.push(true);
     }
 
+    /*
+        Set the symbol and initialize the estimations for each state
+            - initialially, every win state is 1
+            - every draw state is neutral (0.5)
+            - every loss state is 0
+            - every other state is neutral (0.5)
+    */
     pub fn set_symbol(&mut self, symbol: isize){
         self.symbol = symbol;
         for (&hash_val, end) in ALL_STATES.iter(){
@@ -72,6 +95,13 @@ impl AiPlayer{
         }
     }
 
+    /*
+        This function updates the estimations. This is the "ai"
+            - we get all the hashes from the game we've just playes
+            - We go backwards along the states and update the estimation
+            based on the outcome of the game
+            - "Back propogation" and some other buzzwords
+    */
     pub fn backup(&mut self){
         let mut state_hashes = vec![];
 
@@ -88,6 +118,9 @@ impl AiPlayer{
         }
     }
 
+    /*
+        Returns index of the next move based on the current policy
+    */
     pub fn act(&mut self) -> usize{
         let cur_state = self.states[self.states.len()-1].clone();
         let mut next_states = vec![];
@@ -102,10 +135,11 @@ impl AiPlayer{
 
         let mut rng = rand::thread_rng();
 
+        // choose randomly sometimes, so we can reach otherwise unreachable states
         if rng.gen::<f64>() < self.epsilon{
             let length = self.greedy.len();
             self.greedy[length-1] = false;
-            next_positions[rng.gen_range(0..next_positions.len())];
+            return next_positions[rng.gen_range(0..next_positions.len())];
         }
 
         let mut values = vec![];
@@ -113,11 +147,15 @@ impl AiPlayer{
             values.push((self.estimations.get(hash_val), pos));
         }
 
+        // decide randomly between equally valued moves
         values.shuffle(&mut rng);
         values.sort_by(|a,b| a.0.partial_cmp(&b.0).unwrap());
         *values[values.len()-1].1
     }
 
+    /*
+        Serialize and save the policy
+    */
     pub fn save_policy(&self){
         let filename = if self.symbol == 1 {
             "policy_first.bin"
@@ -131,6 +169,9 @@ impl AiPlayer{
         outfile.write_all(serialized.as_bytes()).expect("Failed to write file");
     }
 
+    /*
+        Load and deserialize the policy
+    */
     pub fn load_policy(&mut self){
         let filename = if self.symbol == 1 {
             "policy_first.bin"

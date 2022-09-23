@@ -9,7 +9,8 @@ use std::io;
 use std::{thread, time::Duration};
 
 fn main() {
-    ai_game::train(1000, 100);
+    println!("Let's teach some ai tic tac toe.");
+    ai_game::train(10, 1);
     ai_game::compete(500);
 
     let mut input_str = String::new();
@@ -34,13 +35,13 @@ fn main() {
                     .expect("Failed to read the line");
             }
 
-            if input_str == "1"{
+            if input_str == "X"{
 
             }
     
         }
     }
 
-    println!("Goodbye");
+    println!("\nGoodbye!");
 
 }
