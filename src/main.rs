@@ -48,7 +48,7 @@ fn main() {
 
             if winner == user_symbol {
                 println!("You win!");
-            } else if winner == TileState::Empty{
+            } else if winner == TileState::Empty {
                 println!("Draw!");
             } else {
                 println!("You lose! ")

@@ -1,7 +1,7 @@
 use lazy_static::lazy_static;
-use std::fmt;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
+use std::fmt;
 
 pub const BOARD_SIZE: usize = 9;
 
@@ -19,7 +19,6 @@ pub fn get_all_states() -> HashMap<i32, (bool, TileState)> {
     get_all_states_impl(&first_state, cur_symbol, &mut all_states);
     all_states
 }
-
 
 ///Loop through every position on the board and recursively add
 /// every possible state
@@ -46,18 +45,18 @@ fn get_all_states_impl(
 pub enum TileState {
     O = -1,
     Empty,
-    X
+    X,
 }
 
-pub fn opposite_tile_state(symbol: TileState) -> TileState{
+pub fn opposite_tile_state(symbol: TileState) -> TileState {
     match symbol {
         TileState::O => TileState::X,
         TileState::Empty => TileState::Empty,
-        TileState::X => TileState::O
+        TileState::X => TileState::O,
     }
 }
 
-impl fmt::Display for TileState{
+impl fmt::Display for TileState {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
             TileState::X => write!(f, "X"),
@@ -139,7 +138,7 @@ impl State {
         // Check verticals and horizontals
         for i in 0..3 {
             //vertical
-            score = self.board[i] as i32 + self.board[i + 3] as i32 + self.board[i + 6]as i32;
+            score = self.board[i] as i32 + self.board[i + 3] as i32 + self.board[i + 6] as i32;
             if score == -3 {
                 self.winner = TileState::O;
                 self.end = true;
@@ -151,7 +150,9 @@ impl State {
             }
 
             // horizontal
-            score = self.board[i * 3] as i32 + self.board[(i * 3) + 1]  as i32+ self.board[(i * 3) + 2]as i32;
+            score = self.board[i * 3] as i32
+                + self.board[(i * 3) + 1] as i32
+                + self.board[(i * 3) + 2] as i32;
             if score == -3 {
                 self.winner = TileState::O;
                 self.end = true;
@@ -164,7 +165,7 @@ impl State {
         }
 
         // Check diagonals
-        score = self.board[0] as i32 + self.board[4]as i32 + self.board[8]as i32;
+        score = self.board[0] as i32 + self.board[4] as i32 + self.board[8] as i32;
         if score == -3 {
             self.winner = TileState::O;
             self.end = true;
@@ -175,7 +176,7 @@ impl State {
             return;
         }
 
-        score = self.board[2] as i32  + self.board[4] as i32  + self.board[6] as i32 ;
+        score = self.board[2] as i32 + self.board[4] as i32 + self.board[6] as i32;
 
         if score == -3 {
             self.winner = TileState::O;

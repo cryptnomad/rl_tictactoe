@@ -10,7 +10,7 @@ use std::io::prelude::*;
 pub struct AiPlayer {
     /// An Ai Player has a hash map where they keys are state hashes, and the values
     /// are desirability of that state
-    estimations: HashMap<i32, f64>, 
+    estimations: HashMap<i32, f64>,
     /// Learning Rate
     step_size: f64,
     /// Can be thought of as the likelihood of making a random move over choosing the

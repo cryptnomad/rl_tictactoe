@@ -1,7 +1,7 @@
 use std::io;
 
 use crate::ai_player::AiPlayer;
-use crate::state::{State, TileState, opposite_tile_state};
+use crate::state::{opposite_tile_state, State, TileState};
 
 #[derive(Debug)]
 pub struct HumanGame {

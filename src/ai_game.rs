@@ -1,5 +1,5 @@
 use crate::ai_player::AiPlayer;
-use crate::state::{State, TileState, opposite_tile_state};
+use crate::state::{opposite_tile_state, State, TileState};
 
 pub fn train(epochs: u32, print_every_n: u32) {
     let player1 = AiPlayer::default();
