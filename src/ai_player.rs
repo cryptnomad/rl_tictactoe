@@ -1,4 +1,4 @@
-use crate::state::{State, ALL_STATES, BOARD_SIZE};
+use crate::state::{State, TileState, ALL_STATES, BOARD_SIZE};
 use rand::prelude::*;
 use rand::seq::SliceRandom;
 use std::collections::HashMap;
@@ -19,10 +19,11 @@ pub struct AiPlayer {
     /// Holds all of the states in the game it's playing
     states: Vec<State>,
     greedy: Vec<bool>,
-    symbol: i32,
+    symbol: TileState,
 }
 
 impl AiPlayer {
+    /// Returns a deafault-configuration learner,
     pub fn default() -> Self {
         Self {
             estimations: HashMap::new(),
@@ -30,7 +31,7 @@ impl AiPlayer {
             epsilon: 0.01,
             states: vec![],
             greedy: vec![],
-            symbol: 0,
+            symbol: TileState::Empty,
         }
     }
 
@@ -41,11 +42,11 @@ impl AiPlayer {
             epsilon: epsilon,
             states: vec![],
             greedy: vec![],
-            symbol: 0,
+            symbol: TileState::Empty,
         }
     }
 
-    pub fn competitor(symbol: i32) -> Self {
+    pub fn competitor(symbol: TileState) -> Self {
         let mut player = Self {
             estimations: HashMap::new(),
             step_size: 0.0,
@@ -68,7 +69,7 @@ impl AiPlayer {
         self.greedy.push(true);
     }
 
-    pub fn set_symbol(&mut self, symbol: i32) {
+    pub fn set_symbol(&mut self, symbol: TileState) {
         self.symbol = symbol;
         for (&hash_val, end) in ALL_STATES.iter() {
             let is_end = end.0;
@@ -76,7 +77,7 @@ impl AiPlayer {
                 let winner = end.1;
                 if winner == symbol {
                     self.estimations.insert(hash_val, 1.0);
-                } else if winner == 0i32 {
+                } else if winner == TileState::Empty {
                     self.estimations.insert(hash_val, 0.5);
                 } else {
                     self.estimations.insert(hash_val, 0.0);
@@ -109,7 +110,7 @@ impl AiPlayer {
         let mut next_positions = vec![];
 
         for i in 0..BOARD_SIZE {
-            if cur_state.get_tile(i) == 0 {
+            if cur_state.get_tile(i) == TileState::Empty {
                 next_positions.push(i);
                 next_states.push(cur_state.get_next_state(i, self.symbol).get_hash());
             }
@@ -134,7 +135,7 @@ impl AiPlayer {
     }
 
     pub fn save_policy(&self) {
-        let filename = if self.symbol == 1 {
+        let filename = if self.symbol == TileState::X {
             "policy_first.bin"
         } else {
             "policy_second.bin"
@@ -153,7 +154,7 @@ impl AiPlayer {
         Load and deserialize the policy
     */
     pub fn load_policy(&mut self) {
-        let filename = if self.symbol == 1 {
+        let filename = if self.symbol == TileState::X {
             "policy_first.bin"
         } else {
             "policy_second.bin"

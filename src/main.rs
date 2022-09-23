@@ -6,6 +6,7 @@ pub mod ai_player;
 pub mod human_game;
 pub mod state;
 
+use crate::state::TileState;
 use std::io;
 use std::time::{Duration, Instant};
 
@@ -37,17 +38,17 @@ fn main() {
                     .expect("Failed to read the line");
             }
 
-            let user_symbol: i32 = match symbol_select.trim() {
-                "X" => 1,
-                "O" => -1,
-                _ => 1,
+            let user_symbol: TileState = match symbol_select.trim() {
+                "X" => TileState::X,
+                "O" => TileState::O,
+                _ => TileState::Empty,
             };
             let mut game = human_game::HumanGame::new(user_symbol);
             let winner = game.play();
 
             if winner == user_symbol {
                 println!("You win!");
-            } else if winner == 0 {
+            } else if winner == TileState::Empty{
                 println!("Draw!");
             } else {
                 println!("You lose! ")

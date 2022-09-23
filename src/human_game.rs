@@ -1,28 +1,28 @@
 use std::io;
 
 use crate::ai_player::AiPlayer;
-use crate::state::State;
+use crate::state::{State, TileState, opposite_tile_state};
 
 #[derive(Debug)]
 pub struct HumanGame {
     current_state: State,
-    current_symbol: i32,
+    current_symbol: TileState,
     ai_player: AiPlayer,
-    human_symbol: i32,
+    human_symbol: TileState,
 }
 
 impl HumanGame {
-    pub fn new(human_symbol: i32) -> Self {
-        let ai_player = AiPlayer::competitor(human_symbol * -1);
+    pub fn new(human_symbol: TileState) -> Self {
+        let ai_player = AiPlayer::competitor(opposite_tile_state(human_symbol));
         Self {
             current_state: State::new(),
-            current_symbol: 1,
+            current_symbol: TileState::X,
             ai_player: ai_player,
             human_symbol: human_symbol,
         }
     }
 
-    pub fn play(&mut self) -> i32 {
+    pub fn play(&mut self) -> TileState {
         let mut input_str = String::new();
         self.ai_player.set_state(&self.current_state);
         println!("\nYou will use the number keys to select your move.\n");
@@ -69,10 +69,10 @@ impl HumanGame {
         if index > 8 {
             return false;
         }
-        self.current_state.get_tile(index) == 0
+        self.current_state.get_tile(index) == TileState::Empty
     }
 
     fn alternate(&mut self) {
-        self.current_symbol = self.current_symbol * -1;
+        self.current_symbol = opposite_tile_state(self.current_symbol);
     }
 }

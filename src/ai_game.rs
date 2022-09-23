@@ -1,5 +1,5 @@
 use crate::ai_player::AiPlayer;
-use crate::state::State;
+use crate::state::{State, TileState, opposite_tile_state};
 
 pub fn train(epochs: u32, print_every_n: u32) {
     let player1 = AiPlayer::default();
@@ -10,9 +10,9 @@ pub fn train(epochs: u32, print_every_n: u32) {
 
     for i in 1..epochs + 1 {
         let winner = game.play(false);
-        if winner == 1 {
+        if winner == TileState::X {
             p1_winrate += 1.0;
-        } else if winner == -1 {
+        } else if winner == TileState::O {
             p2_winrate += 1.0;
         }
 
@@ -40,9 +40,9 @@ pub fn compete(num_games: u32) {
 
     for _ in 1..num_games + 1 {
         let winner = game.play(false);
-        if winner == 1 {
+        if winner == TileState::X {
             p1_winrate += 1.0;
-        } else if winner == -1 {
+        } else if winner == TileState::O {
             p2_winrate += 1.0;
         }
         game.reset();
@@ -58,7 +58,7 @@ pub fn compete(num_games: u32) {
 #[derive(Debug)]
 pub struct AiGame {
     current_state: State,
-    current_symbol: i32,
+    current_symbol: TileState,
     player1: AiPlayer,
     player2: AiPlayer,
 }
@@ -67,25 +67,25 @@ impl AiGame {
     pub fn new(player1: AiPlayer, player2: AiPlayer) -> Self {
         let mut game = Self {
             current_state: State::new(),
-            current_symbol: 1,
+            current_symbol: TileState::X,
             player1: player1,
             player2: player2,
         };
 
-        game.player1.set_symbol(1);
-        game.player2.set_symbol(-1);
+        game.player1.set_symbol(TileState::X);
+        game.player2.set_symbol(TileState::O);
         game.player1.set_state(&game.current_state);
         game.player2.set_state(&game.current_state);
         game
     }
 
     //this could be optimized fo sho
-    pub fn play(&mut self, print: bool) -> i32 {
+    pub fn play(&mut self, print: bool) -> TileState {
         while !self.current_state.is_end() {
             if print {
                 self.current_state.display();
             }
-            let index = if self.current_symbol == 1 {
+            let index = if self.current_symbol == TileState::X {
                 self.player1.act()
             } else {
                 self.player2.act()
@@ -106,7 +106,7 @@ impl AiGame {
 
     pub fn reset(&mut self) {
         self.current_state = State::new();
-        self.current_symbol = 1;
+        self.current_symbol = TileState::X;
         self.player1.reset();
         self.player2.reset();
         self.player1.set_state(&self.current_state);
@@ -129,6 +129,6 @@ impl AiGame {
     }
 
     fn alternate(&mut self) {
-        self.current_symbol = self.current_symbol * -1;
+        self.current_symbol = opposite_tile_state(self.current_symbol);
     }
 }
