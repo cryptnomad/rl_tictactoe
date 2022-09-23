@@ -17,8 +17,8 @@ impl HumanGame {
         Self {
             current_state: State::new(),
             current_symbol: TileState::X,
-            ai_player: ai_player,
-            human_symbol: human_symbol,
+            ai_player,
+            human_symbol,
         }
     }
 
@@ -48,7 +48,7 @@ impl HumanGame {
             self.alternate();
         }
         self.current_state.display();
-        return self.current_state.get_winner();
+        self.current_state.get_winner()
     }
 
     fn get_move(&self) -> usize {

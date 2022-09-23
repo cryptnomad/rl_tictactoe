@@ -75,6 +75,12 @@ pub struct State {
     end: bool,
 }
 
+impl Default for State {
+    fn default() -> Self{
+        Self::new()
+    }
+}
+
 impl State {
     pub fn new() -> Self {
         let mut state = Self {
@@ -119,7 +125,7 @@ impl State {
     }
 
     pub fn get_next_state(&self, i: usize, symbol: TileState) -> Self {
-        let mut new_state = self.clone();
+        let mut new_state = *self;
         new_state.board[i] = symbol;
         new_state.update();
         new_state

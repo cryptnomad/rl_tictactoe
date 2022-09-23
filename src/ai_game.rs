@@ -68,8 +68,8 @@ impl AiGame {
         let mut game = Self {
             current_state: State::new(),
             current_symbol: TileState::X,
-            player1: player1,
-            player2: player2,
+            player1,
+            player2,
         };
 
         game.player1.set_symbol(TileState::X);

@@ -38,8 +38,8 @@ impl AiPlayer {
     pub fn custom(step_size: f64, epsilon: f64) -> Self {
         Self {
             estimations: HashMap::new(),
-            step_size: step_size,
-            epsilon: epsilon,
+            step_size,
+            epsilon,
             states: vec![],
             greedy: vec![],
             symbol: TileState::Empty,
@@ -53,7 +53,7 @@ impl AiPlayer {
             epsilon: 0.0,
             states: vec![],
             greedy: vec![],
-            symbol: symbol,
+            symbol,
         };
         player.load_policy();
         player
@@ -65,7 +65,7 @@ impl AiPlayer {
     }
 
     pub fn set_state(&mut self, state: &State) {
-        self.states.push(state.clone());
+        self.states.push(*state);
         self.greedy.push(true);
     }
 
@@ -105,7 +105,7 @@ impl AiPlayer {
     }
 
     pub fn act(&mut self) -> usize {
-        let cur_state = self.states[self.states.len() - 1].clone();
+        let cur_state = self.states[self.states.len() - 1];
         let mut next_states = vec![];
         let mut next_positions = vec![];
 
