@@ -7,10 +7,14 @@ pub mod human_game;
 pub mod state;
 
 use std::io;
+use std::time::{Duration, Instant};
 
 fn main() {
     println!("Let's teach some ai tic tac toe.");
+    let start = Instant::now();
     ai_game::train(100000, 10000);
+    let duration: Duration = start.elapsed();
+    println!("Training took {:?}", duration);
 
     // Should be a draw every time if sufficient training has occured
     ai_game::compete(500);
