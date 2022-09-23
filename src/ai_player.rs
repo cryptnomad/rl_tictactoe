@@ -54,6 +54,22 @@ impl AiPlayer{
     }
 
     /*
+        Used for playing against the human (no learning)
+    */
+    pub fn competitor(symbol: isize) -> Self{
+        let mut player = Self{
+            estimations: HashMap::new(),
+            step_size: 0.0,
+            epsilon: 0.0,
+            states: vec![],
+            greedy: vec![],
+            symbol: symbol,
+        };
+        player.load_policy();
+        player
+    }
+
+    /*
         Reset the player after a game is complete
     */
     pub fn reset(&mut self){

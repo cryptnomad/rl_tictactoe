@@ -4,13 +4,13 @@
 pub mod state;
 pub mod ai_player;
 pub mod ai_game;
+pub mod human_game;
 
 use std::io;
-use std::{thread, time::Duration};
 
 fn main() {
     println!("Let's teach some ai tic tac toe.");
-    ai_game::train(10, 1);
+    ai_game::train(1000000, 100000);
     ai_game::compete(500);
 
     let mut input_str = String::new();
@@ -22,21 +22,29 @@ fn main() {
 
     if input_str.trim() == "Y" || input_str.trim() == "y"{
         loop{
-            println!("\nYou will use the number keys to select your move.\n");
-            println!("The board is set up like so:");
-            println!("1 | 2 | 3\n---------\n4 | 5 | 6\n---------\n7 | 8 | 9\n",);
-            thread::sleep(Duration::from_millis(3000));
-
             let mut symbol_select = String::new();
             while symbol_select.trim() != "X" && symbol_select.trim() != "O" {
+                symbol_select = "".to_string();
                 println!("Would you like to play X (first) or O (second)? (X/O)");
                 io::stdin()
                     .read_line(&mut symbol_select)
                     .expect("Failed to read the line");
             }
 
-            if input_str == "X"{
+            let user_symbol: isize = match symbol_select.trim(){
+                "X" => 1,
+                "O" => -1,
+                _ => 1
+            };
+            let mut game = human_game::HumanGame::new(user_symbol);
+            let winner = game.play();
 
+            if winner == user_symbol{
+                println!("You win!");
+            }else if winner == 0{
+                println!("Draw!");
+            }else{
+                println!("You lose! ")
             }
     
         }

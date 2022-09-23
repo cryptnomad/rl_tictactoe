@@ -4,6 +4,9 @@
 use crate::state::State;
 use crate::ai_player::AiPlayer;
 
+/*
+    Have the default ais play against eachother
+*/
 pub fn train(epochs: usize, print_every_n: usize){
     let player1 = AiPlayer::default();
     let player2 = AiPlayer::default();
@@ -12,7 +15,7 @@ pub fn train(epochs: usize, print_every_n: usize){
     let mut p2_winrate = 0.0;
 
     for i in 1..epochs+1{
-        let winner = game.play(true);
+        let winner = game.play(false);
         if winner == 1{
             p1_winrate += 1.0;
         }else if winner == -1{
@@ -28,6 +31,9 @@ pub fn train(epochs: usize, print_every_n: usize){
     game.save_policies();
 }
 
+/*
+    Play games without learning
+*/
 pub fn compete(num_games: usize){
     let player1 = AiPlayer::custom(0.1, 0.0);
     let player2 = AiPlayer::custom(0.1, 0.0);
