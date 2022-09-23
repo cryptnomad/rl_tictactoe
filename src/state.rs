@@ -30,8 +30,8 @@ fn get_all_states_impl(
     for (i, symbol) in cur_state.board.iter().enumerate() {
         if *symbol == TileState::Empty {
             let new_state = cur_state.get_next_state(i, cur_symbol);
-            if !all_states.contains_key(&new_state.hash) {
-                all_states.insert(new_state.hash, (new_state.end, new_state.winner));
+            if let std::collections::hash_map::Entry::Vacant(e) = all_states.entry(new_state.hash) {
+                e.insert((new_state.end, new_state.winner));
                 if !new_state.end {
                     get_all_states_impl(&new_state, opposite_tile_state(cur_symbol), all_states)
                 }
