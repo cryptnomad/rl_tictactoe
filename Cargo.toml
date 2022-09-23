@@ -2,6 +2,7 @@
 name = "rl_tictactoe"
 version = "0.1.0"
 edition = "2021"
+authors = ["Cryptnomad"]
 
 [dependencies]
 rand = "0.8.5"
