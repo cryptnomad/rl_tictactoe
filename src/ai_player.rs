@@ -5,11 +5,18 @@ use std::collections::HashMap;
 use std::fs::File;
 use std::io::prelude::*;
 
+/// An Ai Player that "learns" as it plays
 #[derive(Debug)]
 pub struct AiPlayer {
-    estimations: HashMap<i32, f64>,
+    /// An Ai Player has a hash map where they keys are state hashes, and the values
+    /// are desirability of that state
+    estimations: HashMap<i32, f64>, 
+    /// Learning Rate
     step_size: f64,
+    /// Can be thought of as the likelihood of making a random move over choosing the
+    /// best move in training. This helps it reach otherwise unreachable states
     epsilon: f64,
+    /// Holds all of the states in the game it's playing
     states: Vec<State>,
     greedy: Vec<bool>,
     symbol: i32,
