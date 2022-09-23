@@ -5,7 +5,6 @@ A rust implementation of Reinforcement learning Tic Tac Toe
 ## To do
 - [ ] Add ability to play against the models
 - [ ] Add comments
-- [ ] Display Board as X and O
 - [ ] Improve interactivity and model customization
 
 ## Inspiration

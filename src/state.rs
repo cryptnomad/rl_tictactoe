@@ -61,16 +61,25 @@ impl State {
     }
 
     pub fn display(&self){
+        let mut char_arr: [char; BOARD_SIZE] = [' '; BOARD_SIZE];
+        for i in 0..BOARD_SIZE{
+            char_arr[i] = match self.board[i]{
+                1 => 'X',
+                0 => ' ',
+                -1 => 'O',
+                _ => ' ',
+            };
+        }
         println!("{} | {} | {}\n---------\n{} | {} | {}\n---------\n{} | {} | {}\n", 
-            self.board[0], 
-            self.board[1], 
-            self.board[2], 
-            self.board[3], 
-            self.board[4], 
-            self.board[5], 
-            self.board[6], 
-            self.board[7], 
-            self.board[8]
+            char_arr[0], 
+            char_arr[1], 
+            char_arr[2], 
+            char_arr[3], 
+            char_arr[4], 
+            char_arr[5], 
+            char_arr[6], 
+            char_arr[7], 
+            char_arr[8]
         );
     }
     
