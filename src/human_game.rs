@@ -6,13 +6,13 @@ use crate::state::State;
 #[derive(Debug)]
 pub struct HumanGame {
     current_state: State,
-    current_symbol: isize,
+    current_symbol: i32,
     ai_player: AiPlayer,
-    human_symbol: isize,
+    human_symbol: i32,
 }
 
 impl HumanGame {
-    pub fn new(human_symbol: isize) -> Self {
+    pub fn new(human_symbol: i32) -> Self {
         let ai_player = AiPlayer::competitor(human_symbol * -1);
         Self {
             current_state: State::new(),
@@ -22,7 +22,7 @@ impl HumanGame {
         }
     }
 
-    pub fn play(&mut self) -> isize {
+    pub fn play(&mut self) -> i32 {
         let mut input_str = String::new();
         self.ai_player.set_state(&self.current_state);
         println!("\nYou will use the number keys to select your move.\n");

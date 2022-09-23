@@ -7,12 +7,12 @@ use std::io::prelude::*;
 
 #[derive(Debug)]
 pub struct AiPlayer {
-    estimations: HashMap<isize, f64>,
+    estimations: HashMap<i32, f64>,
     step_size: f64,
     epsilon: f64,
     states: Vec<State>,
     greedy: Vec<bool>,
-    symbol: isize,
+    symbol: i32,
 }
 
 impl AiPlayer {
@@ -38,7 +38,7 @@ impl AiPlayer {
         }
     }
 
-    pub fn competitor(symbol: isize) -> Self {
+    pub fn competitor(symbol: i32) -> Self {
         let mut player = Self {
             estimations: HashMap::new(),
             step_size: 0.0,
@@ -61,7 +61,7 @@ impl AiPlayer {
         self.greedy.push(true);
     }
 
-    pub fn set_symbol(&mut self, symbol: isize) {
+    pub fn set_symbol(&mut self, symbol: i32) {
         self.symbol = symbol;
         for (&hash_val, end) in ALL_STATES.iter() {
             let is_end = end.0;
@@ -69,7 +69,7 @@ impl AiPlayer {
                 let winner = end.1;
                 if winner == symbol {
                     self.estimations.insert(hash_val, 1.0);
-                } else if winner == 0isize {
+                } else if winner == 0i32 {
                     self.estimations.insert(hash_val, 0.5);
                 } else {
                     self.estimations.insert(hash_val, 0.0);
@@ -89,7 +89,7 @@ impl AiPlayer {
 
         for i in (0..state_hashes.len() - 1).rev() {
             let state_hash = state_hashes[i];
-            let td_error = ((self.greedy[i] as isize) as f64)
+            let td_error = ((self.greedy[i] as i32) as f64)
                 * (self.estimations.get(&state_hashes[i + 1]).unwrap()
                     - self.estimations.get(&state_hash).unwrap());
             *self.estimations.get_mut(&state_hash).unwrap() += self.step_size * td_error;

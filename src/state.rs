@@ -6,15 +6,15 @@ use std::collections::HashMap;
 pub const BOARD_SIZE: usize = 9;
 
 lazy_static! {
-    pub static ref ALL_STATES: HashMap<isize, (bool, isize)> = get_all_states();
+    pub static ref ALL_STATES: HashMap<i32, (bool, i32)> = get_all_states();
 }
 
 /*
     Get all possible states of the board
 */
-pub fn get_all_states() -> HashMap<isize, (bool, isize)> {
+pub fn get_all_states() -> HashMap<i32, (bool, i32)> {
     let mut all_states = HashMap::new();
-    let cur_symbol: isize = 1;
+    let cur_symbol: i32 = 1;
     let first_state = State::new();
 
     all_states.insert(first_state.hash, (first_state.end, first_state.winner));
@@ -28,11 +28,11 @@ pub fn get_all_states() -> HashMap<isize, (bool, isize)> {
 */
 fn get_all_states_impl(
     cur_state: &State,
-    cur_symbol: isize,
-    all_states: &mut HashMap<isize, (bool, isize)>,
+    cur_symbol: i32,
+    all_states: &mut HashMap<i32, (bool, i32)>,
 ) {
     for (i, symbol) in cur_state.board.iter().enumerate() {
-        if *symbol == 0isize {
+        if *symbol == 0i32 {
             let new_state = cur_state.get_next_state(i, cur_symbol);
             if !all_states.contains_key(&new_state.hash) {
                 all_states.insert(new_state.hash, (new_state.end, new_state.winner));
@@ -49,9 +49,9 @@ fn get_all_states_impl(
 */
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)] // enable copy semantics, make it printable and comparable
 pub struct State {
-    board: [isize; BOARD_SIZE], // Board has 1 for X, 0 for none, and -1 for O
-    winner: isize,
-    hash: isize,
+    board: [i32; BOARD_SIZE], // Board has 1 for X, 0 for none, and -1 for O
+    winner: i32,
+    hash: i32,
     end: bool,
 }
 
@@ -91,15 +91,15 @@ impl State {
         );
     }
 
-    pub fn get_hash(&self) -> isize {
+    pub fn get_hash(&self) -> i32 {
         self.hash
     }
 
-    pub fn get_tile(&self, i: usize) -> isize {
+    pub fn get_tile(&self, i: usize) -> i32 {
         self.board[i]
     }
 
-    pub fn get_winner(&self) -> isize {
+    pub fn get_winner(&self) -> i32 {
         self.winner
     }
 
@@ -107,7 +107,7 @@ impl State {
         self.end
     }
 
-    pub fn get_next_state(&self, i: usize, symbol: isize) -> Self {
+    pub fn get_next_state(&self, i: usize, symbol: i32) -> Self {
         let mut new_state = self.clone();
         new_state.board[i] = symbol;
         new_state.update();
@@ -115,7 +115,7 @@ impl State {
     }
 
     fn compute_hash(&mut self) {
-        let mut hash: isize = 0;
+        let mut hash: i32 = 0;
         for (_, val) in self.board.iter().enumerate() {
             hash = hash * 3 + (*val) + 1;
         }
@@ -123,7 +123,7 @@ impl State {
     }
 
     fn check_end(&mut self) {
-        let mut score: isize;
+        let mut score: i32;
         // Check verticals and horizontals
         for i in 0..3 {
             //vertical
@@ -177,7 +177,7 @@ impl State {
 
         score = self.board.iter().map(|&x| x.abs()).sum();
 
-        if score == BOARD_SIZE as isize {
+        if score == BOARD_SIZE as i32 {
             self.winner = 0;
             self.end = true;
             return;

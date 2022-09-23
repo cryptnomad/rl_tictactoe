@@ -1,7 +1,7 @@
 use crate::ai_player::AiPlayer;
 use crate::state::State;
 
-pub fn train(epochs: usize, print_every_n: usize) {
+pub fn train(epochs: u32, print_every_n: u32) {
     let player1 = AiPlayer::default();
     let player2 = AiPlayer::default();
     let mut game = AiGame::new(player1, player2);
@@ -30,7 +30,7 @@ pub fn train(epochs: usize, print_every_n: usize) {
     game.save_policies();
 }
 
-pub fn compete(num_games: usize) {
+pub fn compete(num_games: u32) {
     let player1 = AiPlayer::custom(0.1, 0.0);
     let player2 = AiPlayer::custom(0.1, 0.0);
     let mut game = AiGame::new(player1, player2);
@@ -58,7 +58,7 @@ pub fn compete(num_games: usize) {
 #[derive(Debug)]
 pub struct AiGame {
     current_state: State,
-    current_symbol: isize,
+    current_symbol: i32,
     player1: AiPlayer,
     player2: AiPlayer,
 }
@@ -80,7 +80,7 @@ impl AiGame {
     }
 
     //this could be optimized fo sho
-    pub fn play(&mut self, print: bool) -> isize {
+    pub fn play(&mut self, print: bool) -> i32 {
         while !self.current_state.is_end() {
             if print {
                 self.current_state.display();

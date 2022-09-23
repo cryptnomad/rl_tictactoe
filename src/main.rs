@@ -37,7 +37,7 @@ fn main() {
                     .expect("Failed to read the line");
             }
 
-            let user_symbol: isize = match symbol_select.trim() {
+            let user_symbol: i32 = match symbol_select.trim() {
                 "X" => 1,
                 "O" => -1,
                 _ => 1,
