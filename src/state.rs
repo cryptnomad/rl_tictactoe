@@ -20,7 +20,7 @@ pub fn get_all_states() -> HashMap<i32, (bool, TileState)> {
     all_states
 }
 
-///Loop through every position on the board and recursively add
+/// Loop through every position on the board and recursively add
 /// every possible state
 fn get_all_states_impl(
     cur_state: &State,
